@@ -33,15 +33,14 @@
   text-decoration: none;
 }
 
-.brand__mark {
+.brand__logo {
   width: 2.25rem;
   height: 2.25rem;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgb(255 255 255 / 30%);
-  border-radius: 50%;
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
+  display: block;
+  padding: 0.08rem;
+  border-radius: 26%;
+  background: cadetblue;
+  object-fit: contain;
 }
 
 .eyebrow {

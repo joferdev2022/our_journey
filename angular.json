@@ -25,6 +25,11 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               {
+                "glob": "**/*",
+                "input": "src/app/assets",
+                "output": "/assets"
+              },
+              {
                 "glob": "maplibre-gl-worker.mjs",
                 "input": "node_modules/maplibre-gl/dist",
                 "output": "/"
