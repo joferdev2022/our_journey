@@ -1,0 +1,12 @@
+<div #mapContainer class="map" aria-label="Mapa de recuerdos del viaje"></div>
+@if (!hasMapStyle) {
+  <div class="map-message" role="status">
+    <strong>El mapa está listo para conectarse</strong
+    ><span>Configura <code>mapStyleUrl</code> para mostrarlo.</span>
+  </div>
+} @else if (mapFailed()) {
+  <div class="map-message" role="alert">
+    <strong>No pudimos cargar el mapa</strong
+    ><span>Comprueba la conexión e inténtalo nuevamente.</span>
+  </div>
+}

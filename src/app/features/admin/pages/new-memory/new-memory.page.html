@@ -1,0 +1,17 @@
+<section class="memory-editor-page">
+  <header class="page-header">
+    <a class="back-link" routerLink="/admin">← Administración</a>
+    <p class="eyebrow">Nuevo recuerdo</p>
+    <h1>Guarda un lugar en nuestra historia.</h1>
+    <p>Completa los datos y señala en el mapa dónde ocurrió.</p>
+  </header>
+
+  <app-memory-form
+    mode="create"
+    [initialTripId]="initialTripId"
+    [isSaving]="isSaving()"
+    [saveError]="saveError()"
+    (submitted)="createMemory($event)"
+    (canceled)="cancel()"
+  />
+</section>

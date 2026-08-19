@@ -1,0 +1,96 @@
+:host {
+  display: block;
+}
+.trip-form {
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: rgb(255 255 255 / 92%);
+  box-shadow: 0 14px 38px rgb(23 32 29 / 7%);
+}
+.field {
+  margin-bottom: 1rem;
+}
+label {
+  display: block;
+  margin-bottom: 0.42rem;
+  color: #34413c;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+label span {
+  color: var(--danger);
+}
+input,
+textarea {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.72rem 0.82rem;
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  color: var(--ink);
+  background: #fff;
+}
+input:focus,
+textarea:focus {
+  border-color: var(--accent);
+  outline: 0;
+  box-shadow: 0 0 0 3px rgb(69 107 93 / 12%);
+}
+textarea {
+  min-height: 8rem;
+  resize: vertical;
+}
+.field-grid {
+  display: grid;
+  gap: 0 1rem;
+}
+.field-error,
+.range-error,
+.save-error {
+  margin: 0.42rem 0 0;
+  color: var(--danger);
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+.range-error,
+.save-error {
+  margin-bottom: 1rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.55rem;
+  background: #fbebeb;
+}
+footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  padding-top: 0.4rem;
+}
+button {
+  min-height: 2.75rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.secondary {
+  border: 1px solid var(--line);
+  color: var(--ink);
+  background: #fff;
+}
+.primary {
+  border: 0;
+  color: #fff;
+  background: var(--accent-strong);
+}
+@media (min-width: 600px) {
+  .field-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

@@ -1,0 +1,81 @@
+:host {
+  display: block;
+  height: 100%;
+  overflow: auto;
+}
+.trip-editor {
+  min-height: 100%;
+  padding: 1.25rem 1rem 3rem;
+  background:
+    radial-gradient(circle at 90% 0, rgb(166 119 85 / 10%), transparent 24rem), var(--surface);
+}
+.page-header,
+app-trip-form,
+.state-card {
+  width: min(100%, 44rem);
+  margin-inline: auto;
+}
+.page-header {
+  padding: 0.75rem 0 1.5rem;
+}
+.back-link {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  color: var(--accent-strong);
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.eyebrow {
+  margin: 0 0 0.55rem;
+  color: var(--accent);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+h1,
+p {
+  margin: 0;
+}
+h1 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(2.2rem, 8vw, 3.8rem);
+  font-weight: 400;
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+.page-header > p:last-child {
+  margin-top: 0.7rem;
+  color: var(--ink-muted);
+  line-height: 1.6;
+}
+.state-card {
+  min-height: 22rem;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.65rem;
+  color: var(--ink-muted);
+  text-align: center;
+}
+.state-card h1 {
+  font-size: 2rem;
+}
+.state-card a,
+.state-card button {
+  padding: 0.6rem 0.8rem;
+  border: 0;
+  border-radius: 0.55rem;
+  color: #fff;
+  background: var(--accent-strong);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+@media (min-width: 700px) {
+  .trip-editor {
+    padding: 2rem 2rem 4rem;
+  }
+}

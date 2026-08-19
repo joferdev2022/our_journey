@@ -1,0 +1,99 @@
+<section class="trip-detail-page">
+  @if (status() === 'loading') {
+    <div class="state-card" role="status">Cargando viaje…</div>
+  } @else if (status() === 'not-found') {
+    <div class="state-card">
+      <p class="eyebrow">Viaje no encontrado</p>
+      <h1>Este capítulo no está disponible.</h1>
+      <a routerLink="/trips">Volver a viajes</a>
+    </div>
+  } @else if (status() === 'error') {
+    <div class="state-card" role="alert">
+      <p class="eyebrow">No pudimos abrir el viaje</p>
+      <h1>Algo salió mal.</h1>
+      <button type="button" (click)="retry()">Reintentar</button>
+    </div>
+  } @else if (trip(); as currentTrip) {
+    <header class="trip-header">
+      <div>
+        <a class="back-link" routerLink="/trips">← Todos los viajes</a>
+        <p class="eyebrow">Itinerario de recuerdos</p>
+        <h1>{{ currentTrip.title }}</h1>
+        <p class="trip-dates">{{ formatDates(currentTrip.startDate, currentTrip.endDate) }}</p>
+        @if (currentTrip.description) {
+          <p class="trip-description">{{ currentTrip.description }}</p>
+        }
+      </div>
+      <div class="trip-actions">
+        <a [routerLink]="['/admin/trips', currentTrip.id, 'edit']">Editar viaje</a>
+        <a
+          class="primary-action"
+          routerLink="/admin/memories/new"
+          [queryParams]="{ tripId: currentTrip.id }"
+        >
+          ＋ Añadir recuerdo
+        </a>
+      </div>
+    </header>
+
+    @if (memories().length === 0) {
+      <div class="empty-trip">
+        <span class="empty-trip__mark" aria-hidden="true">OJ</span>
+        <h2>Este viaje todavía no tiene recuerdos.</h2>
+        <p>Añade el primero y aparecerá aquí junto con su lugar en el mapa.</p>
+        <a routerLink="/admin/memories/new" [queryParams]="{ tripId: currentTrip.id }">
+          ＋ Añadir recuerdo
+        </a>
+      </div>
+    } @else {
+      <div class="trip-layout">
+        <section class="map-panel" aria-label="Mapa narrativo del viaje">
+          <div class="map-shell">
+            <app-trip-map
+              [featureCollection]="featureCollection()"
+              [tripPath]="tripPath()"
+              [selectedMemoryId]="selectedMemory()?.id ?? null"
+              (memorySelected)="selectFromMap($event)"
+            />
+            @if (selectedMemory(); as memory) {
+              <app-memory-detail-card
+                [memory]="memory"
+                [categoryName]="categoryName(memory.categoryId)"
+                (closed)="closeMemoryDetail()"
+              />
+            }
+          </div>
+          <p class="map-note">
+            La línea conecta los recuerdos por fecha; representa el orden narrativo, no una ruta
+            real.
+          </p>
+        </section>
+
+        <section class="memory-story" aria-labelledby="trip-memories-title">
+          <header>
+            <p class="eyebrow">El recorrido</p>
+            <h2 id="trip-memories-title">
+              {{ memories().length }}
+              {{ memories().length === 1 ? 'recuerdo' : 'recuerdos' }}
+            </h2>
+          </header>
+          <ol>
+            @for (memory of memories(); track memory.id; let isLast = $last) {
+              <li [class.is-last]="isLast">
+                <span class="story-point" aria-hidden="true"></span>
+                <article>
+                  <time [attr.datetime]="memory.memoryDate">
+                    {{ formatMemoryDate(memory.memoryDate) }}
+                  </time>
+                  <h3>{{ memory.title }}</h3>
+                  <p>{{ memory.placeName || 'Lugar no especificado' }}</p>
+                  <button type="button" (click)="showOnMap(memory)">Ver en mapa</button>
+                </article>
+              </li>
+            }
+          </ol>
+        </section>
+      </div>
+    }
+  }
+</section>

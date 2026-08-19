@@ -1,0 +1,34 @@
+<div class="backdrop" (click)="canceled.emit()">
+  <section
+    class="dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="delete-memory-title"
+    aria-describedby="delete-memory-description"
+    (click)="$event.stopPropagation()"
+  >
+    <p class="eyebrow">Acción permanente</p>
+    <h2 id="delete-memory-title">¿Eliminar “{{ memoryTitle() }}”?</h2>
+    <p id="delete-memory-description">
+      También se eliminarán permanentemente las fotografías asociadas. Esta acción no se puede
+      deshacer.
+    </p>
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+    <div class="actions">
+      <button
+        class="cancel"
+        type="button"
+        autofocus
+        [disabled]="isDeleting()"
+        (click)="canceled.emit()"
+      >
+        Cancelar
+      </button>
+      <button class="delete" type="button" [disabled]="isDeleting()" (click)="confirmed.emit()">
+        {{ isDeleting() ? 'Eliminando…' : 'Eliminar recuerdo' }}
+      </button>
+    </div>
+  </section>
+</div>

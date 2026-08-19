@@ -1,0 +1,13 @@
+<div
+  #mapContainer
+  class="location-map"
+  aria-label="Mapa para seleccionar la ubicación del recuerdo"
+></div>
+
+@if (!hasMapStyle) {
+  <div class="map-message" role="status">
+    Configura <code>mapStyleUrl</code> para seleccionar una ubicación.
+  </div>
+} @else if (mapFailed()) {
+  <div class="map-message" role="alert">No pudimos cargar el mapa de ubicación.</div>
+}

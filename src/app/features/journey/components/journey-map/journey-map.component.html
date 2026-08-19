@@ -1,0 +1,14 @@
+<div #mapContainer class="map" aria-label="Mapa de nuestros recuerdos"></div>
+
+@if (!hasMapStyle) {
+  <div class="map-message" role="status">
+    <span class="map-message__mark" aria-hidden="true"></span>
+    <strong>El mapa está listo para conectarse</strong>
+    <span>Configura <code>mapStyleUrl</code> para cargar el estilo de MapLibre.</span>
+  </div>
+} @else if (mapFailed()) {
+  <div class="map-message" role="alert">
+    <strong>No pudimos cargar el mapa</strong>
+    <span>Comprueba la URL del estilo y vuelve a intentarlo.</span>
+  </div>
+}

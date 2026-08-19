@@ -1,0 +1,33 @@
+<section class="memory-editor-page">
+  @if (status() === 'loading') {
+    <div class="state-card" role="status">
+      <span class="spinner" aria-hidden="true"></span>Cargando recuerdo…
+    </div>
+  } @else if (status() === 'not-found') {
+    <div class="state-card">
+      <h1>No encontramos este recuerdo.</h1>
+      <a routerLink="/admin">Volver a Administración</a>
+    </div>
+  } @else if (status() === 'error') {
+    <div class="state-card" role="alert">
+      <h1>No pudimos cargar el recuerdo.</h1>
+      <p>Comprueba la conexión e inténtalo nuevamente.</p>
+      <button type="button" (click)="retry()">Reintentar</button>
+    </div>
+  } @else if (memory(); as selectedMemory) {
+    <header class="page-header">
+      <p class="eyebrow">Editar recuerdo</p>
+      <h1>{{ selectedMemory.title }}</h1>
+      <p>Actualiza sus datos o mueve el marcador antes de guardar.</p>
+    </header>
+
+    <app-memory-form
+      mode="edit"
+      [initialMemory]="selectedMemory"
+      [isSaving]="isSaving()"
+      [saveError]="saveError()"
+      (submitted)="updateMemory($event)"
+      (canceled)="cancel()"
+    />
+  }
+</section>

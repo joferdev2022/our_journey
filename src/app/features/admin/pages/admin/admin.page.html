@@ -1,0 +1,96 @@
+<section class="admin-page">
+  <header class="admin-header">
+    <div>
+      <p class="eyebrow">Our Journey</p>
+      <h1>Administración</h1>
+      <p>Un espacio sencillo para cuidar los recuerdos de nuestra historia.</p>
+    </div>
+    <div class="admin-actions">
+      <a class="trips-button" routerLink="/admin/trips">Administrar viajes</a>
+      <a class="new-memory-button" routerLink="/admin/memories/new"
+        ><span aria-hidden="true">＋</span>Nuevo recuerdo</a
+      >
+    </div>
+  </header>
+
+  <section class="memories-section" aria-labelledby="admin-memories-title">
+    <div class="section-header">
+      <div>
+        <h2 id="admin-memories-title">Recuerdos</h2>
+        <p>
+          {{ memories().length }}
+          {{ memories().length === 1 ? 'recuerdo guardado' : 'recuerdos guardados' }}
+        </p>
+      </div>
+    </div>
+
+    @if (status() === 'loading') {
+      <div class="state-card" role="status">
+        <span class="spinner" aria-hidden="true"></span>Cargando recuerdos…
+      </div>
+    } @else if (status() === 'error') {
+      <div class="state-card state-card--error" role="alert">
+        <h3>No pudimos cargar los recuerdos.</h3>
+        <p>Intenta nuevamente en unos segundos.</p>
+        <button type="button" (click)="retry()">Reintentar</button>
+      </div>
+    } @else if (status() === 'empty') {
+      <div class="state-card state-card--empty">
+        <span class="empty-mark" aria-hidden="true">OJ</span>
+        <h3>Todavía no hay recuerdos guardados.</h3>
+        <p>Crea el primero para comenzar nuestra historia.</p>
+        <a routerLink="/admin/memories/new">Crear primer recuerdo</a>
+      </div>
+    } @else {
+      <div class="memory-list">
+        <div class="memory-list__head" aria-hidden="true">
+          <span>Recuerdo</span><span>Fecha</span><span>Categoría</span><span>Acciones</span>
+        </div>
+        @for (memory of memories(); track memory.id) {
+          <article class="memory-row">
+            <div class="memory-row__title">
+              <span class="memory-initial" aria-hidden="true">{{
+                memory.title.slice(0, 1).toUpperCase()
+              }}</span>
+              <div>
+                <h3>{{ memory.title }}</h3>
+                <p>{{ memory.placeName || 'Lugar no especificado' }}</p>
+              </div>
+            </div>
+            <p class="memory-row__date">{{ formatDate(memory.memoryDate) }}</p>
+            <p class="category-chip">{{ categoryName(memory.categoryId) }}</p>
+            <div class="memory-row__actions">
+              <a
+                [routerLink]="['/admin/memories', memory.id, 'edit']"
+                [attr.aria-label]="'Editar ' + memory.title"
+                >Editar</a
+              >
+              <a
+                [routerLink]="['/admin/memories', memory.id, 'photos']"
+                [attr.aria-label]="'Administrar fotografías de ' + memory.title"
+                >Fotografías</a
+              >
+              <button
+                type="button"
+                [attr.aria-label]="'Eliminar ' + memory.title"
+                (click)="requestDelete(memory)"
+              >
+                Eliminar
+              </button>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </section>
+</section>
+
+@if (pendingDelete(); as memory) {
+  <app-memory-delete-dialog
+    [memoryTitle]="memory.title"
+    [isDeleting]="isDeleting()"
+    [error]="deleteError()"
+    (canceled)="cancelDelete()"
+    (confirmed)="confirmDelete()"
+  />
+}

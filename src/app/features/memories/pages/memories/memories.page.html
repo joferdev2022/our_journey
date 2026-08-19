@@ -1,0 +1,145 @@
+<section class="memories-page">
+  <header class="memories-header">
+    <p class="eyebrow">Archivo privado</p>
+    <h1>Recuerdos</h1>
+    <p class="memory-total">
+      {{ memories().length }}
+      {{ memories().length === 1 ? 'momento guardado' : 'momentos guardados' }}
+    </p>
+    <p class="intro">Nuestra historia, momento a momento.</p>
+  </header>
+
+  @if (status() === 'loading') {
+    <section class="loading-library" aria-label="Cargando recuerdos" aria-busy="true">
+      <div class="skeleton-toolbar"></div>
+      <div class="skeleton-grid">
+        @for (item of [1, 2, 3, 4, 5, 6, 7, 8]; track item) {
+          <div class="skeleton-card"><span></span><i></i><i></i></div>
+        }
+      </div>
+    </section>
+  } @else if (status() === 'error') {
+    <div class="state-card" role="alert">
+      <p class="eyebrow">No pudimos abrir el archivo</p>
+      <h2>Los recuerdos no están disponibles ahora.</h2>
+      <p>Comprueba la conexión e inténtalo nuevamente.</p>
+      <button type="button" (click)="retry()">Reintentar</button>
+    </div>
+  } @else if (status() === 'empty') {
+    <div class="state-card">
+      <span class="empty-mark" aria-hidden="true">OJ</span>
+      <h2>Todavía no hay recuerdos guardados.</h2>
+      <p>Crea el primero para comenzar nuestra historia.</p>
+      <a routerLink="/admin/memories/new">Crear primer recuerdo</a>
+    </div>
+  } @else {
+    <section class="library-controls" aria-label="Buscar y filtrar recuerdos">
+      <label class="search-field">
+        <span class="visually-hidden">Buscar recuerdos</span>
+        <input
+          type="search"
+          placeholder="Buscar recuerdos..."
+          [value]="query()"
+          (input)="updateQuery($any($event.target).value)"
+        />
+      </label>
+
+      <div class="select-controls">
+        <label>
+          <span>Año</span>
+          <select [value]="selectedYear() ?? ''" (change)="selectYear($any($event.target).value)">
+            <option value="">Todos</option>
+            @for (year of years(); track year) {
+              <option [value]="year">{{ year }}</option>
+            }
+          </select>
+        </label>
+        <label>
+          <span>Orden</span>
+          <select [value]="sortOrder()" (change)="selectSortOrder($any($event.target).value)">
+            <option value="newest">Más recientes</option>
+            <option value="oldest">Más antiguos</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="category-strip" aria-label="Filtrar por categoría">
+        <button
+          type="button"
+          [class.is-active]="selectedCategoryId() === null"
+          [attr.aria-pressed]="selectedCategoryId() === null"
+          (click)="selectCategory(null)"
+        >
+          Todos
+        </button>
+        @for (category of categories(); track category.id) {
+          <button
+            type="button"
+            [class.is-active]="selectedCategoryId() === category.id"
+            [attr.aria-pressed]="selectedCategoryId() === category.id"
+            (click)="selectCategory(category.id)"
+          >
+            {{ category.name }}
+          </button>
+        }
+      </div>
+    </section>
+
+    @if (filtersActive()) {
+      <div class="results-summary" aria-live="polite">
+        <span>
+          {{ filteredMemories().length }}
+          {{ filteredMemories().length === 1 ? 'recuerdo encontrado' : 'recuerdos encontrados' }}
+        </span>
+        <button type="button" (click)="clearFilters()">Limpiar filtros</button>
+      </div>
+    }
+
+    @if (filteredMemories().length === 0) {
+      <div class="state-card state-card--results">
+        <h2>No encontramos recuerdos con esos filtros.</h2>
+        <p>Prueba con otra búsqueda o vuelve a ver la biblioteca completa.</p>
+        <button type="button" (click)="clearFilters()">Limpiar filtros</button>
+      </div>
+    } @else {
+      <div class="memory-archive">
+        @for (yearGroup of groups(); track yearGroup.year) {
+          <section class="year-group" [attr.aria-labelledby]="'memory-year-' + yearGroup.year">
+            <h2 [id]="'memory-year-' + yearGroup.year">{{ yearGroup.year }}</h2>
+
+            @for (monthGroup of yearGroup.months; track monthGroup.key) {
+              <section
+                class="month-group"
+                [attr.aria-labelledby]="'memory-month-' + monthGroup.key"
+              >
+                <header>
+                  <h3 [id]="'memory-month-' + monthGroup.key">{{ monthGroup.label }}</h3>
+                  <span aria-hidden="true"></span>
+                </header>
+                <div class="memory-grid">
+                  @for (memory of monthGroup.memories; track memory.id) {
+                    <app-memory-card
+                      [memory]="memory"
+                      [category]="categoryFor(memory.categoryId)"
+                      [thumbnailUrl]="coverUrlFor(memory.id)"
+                    />
+                  }
+                </div>
+              </section>
+            }
+          </section>
+        }
+      </div>
+
+      @if (hasMore()) {
+        <div class="show-more">
+          <button type="button" (click)="showMore()">
+            Mostrar más
+            <span aria-hidden="true">↓</span>
+          </button>
+          <p>{{ visibleMemories().length }} de {{ filteredMemories().length }}</p>
+        </div>
+      }
+    }
+  }
+</section>

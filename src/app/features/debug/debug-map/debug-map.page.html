@@ -1,0 +1,18 @@
+<main class="debug-map">
+  <div #mapContainer class="debug-map__canvas" aria-label="Mapa aislado de diagnóstico"></div>
+
+  <aside class="debug-map__panel">
+    <strong>MapLibre limpio · {{ styleName }} · zoom {{ initialZoom }}</strong>
+    <span>Centro: [-76, -9.3]. Revisa Console y Network.</span>
+    <nav aria-label="Estilos OpenFreeMap">
+      <a href="/debug-map?style=liberty&zoom=12">Liberty</a>
+      <a href="/debug-map?style=bright&zoom=12">Bright</a>
+      <a href="/debug-map?style=positron&zoom=12">Positron</a>
+    </nav>
+    <nav aria-label="Zoom de diagnóstico">
+      @for (zoom of [5, 8, 10, 12, 14, 16]; track zoom) {
+        <a href="/debug-map?style={{ styleName }}&zoom={{ zoom }}">z{{ zoom }}</a>
+      }
+    </nav>
+  </aside>
+</main>

@@ -1,0 +1,79 @@
+<section class="photo-uploader" aria-labelledby="photo-uploader-title">
+  <div class="photo-uploader__heading">
+    <div>
+      <p class="eyebrow">Nuevas imágenes</p>
+      <h2 id="photo-uploader-title">Añadir fotografías</h2>
+      <p>JPG, PNG o WebP · máximo 20 MB por archivo · hasta {{ maximumPerSelection }} por tanda.</p>
+    </div>
+
+    <label class="picker-button" [class.is-disabled]="isBusy()">
+      <span aria-hidden="true">＋</span>
+      Añadir fotografías
+      <input
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        multiple
+        [disabled]="isBusy()"
+        (change)="filesSelected($event)"
+      />
+    </label>
+  </div>
+
+  @if (selectionMessage()) {
+    <p class="selection-message" role="status">{{ selectionMessage() }}</p>
+  }
+
+  @if (items().length > 0) {
+    <div class="selected-list" aria-label="Fotografías seleccionadas">
+      @for (item of items(); track item.id) {
+        <article class="selected-photo" [class]="'is-' + item.status">
+          <div class="selected-photo__preview">
+            @if (item.previewUrl) {
+              <img [src]="item.previewUrl" [alt]="'Preview de ' + item.file.name" />
+            } @else {
+              <span aria-hidden="true">{{ item.status === 'success' ? '✓' : '!' }}</span>
+            }
+          </div>
+
+          <div class="selected-photo__content">
+            <h3>{{ item.file.name }}</h3>
+            <p class="status-label">{{ statusLabel(item) }}</p>
+            <p class="item-message">{{ item.message }}</p>
+          </div>
+
+          <div class="selected-photo__actions">
+            @if (canRetry(item)) {
+              <button type="button" [disabled]="isBusy()" (click)="retryItem(item)">
+                Reintentar
+              </button>
+            }
+            @if (item.status !== 'success') {
+              <button
+                class="remove-button"
+                type="button"
+                [disabled]="item.status === 'uploading'"
+                [attr.aria-label]="'Quitar ' + item.file.name"
+                (click)="removeItem(item)"
+              >
+                Quitar
+              </button>
+            }
+          </div>
+        </article>
+      }
+    </div>
+
+    <div class="upload-footer">
+      <p aria-live="polite">{{ batchMessage() }}</p>
+      <button
+        class="upload-button"
+        type="button"
+        [disabled]="readyCount() === 0 || isBusy()"
+        (click)="uploadReady()"
+      >
+        Subir {{ readyCount() }}
+        {{ readyCount() === 1 ? 'fotografía' : 'fotografías' }}
+      </button>
+    </div>
+  }
+</section>

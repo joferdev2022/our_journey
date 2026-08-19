@@ -1,0 +1,44 @@
+<div class="shell">
+  <header class="shell__header">
+    <a class="brand" routerLink="/journey" aria-label="Our Journey, mapa">
+      <span class="brand__mark" aria-hidden="true">OJ</span>
+      <span>Our Journey</span>
+    </a>
+
+    <div class="header-actions">
+      <a class="admin-link" routerLink="/admin" routerLinkActive="is-active"> Administrar </a>
+      <button class="sign-out" type="button" (click)="signOut()">Cerrar sesión</button>
+    </div>
+  </header>
+
+  @if (signOutError()) {
+    <p class="session-error" role="alert">{{ signOutError() }}</p>
+  }
+
+  <main class="shell__content">
+    <router-outlet />
+  </main>
+
+  <nav class="bottom-nav" aria-label="Navegación principal">
+    <a
+      routerLink="/journey"
+      routerLinkActive="is-active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <span class="nav-symbol nav-symbol--map" aria-hidden="true"></span>
+      <span>Mapa</span>
+    </a>
+    <a routerLink="/memories" routerLinkActive="is-active">
+      <span class="nav-symbol nav-symbol--memory" aria-hidden="true"></span>
+      <span>Recuerdos</span>
+    </a>
+    <a routerLink="/trips" routerLinkActive="is-active">
+      <span class="nav-symbol nav-symbol--trip" aria-hidden="true"></span>
+      <span>Viajes</span>
+    </a>
+    <a routerLink="/timeline" routerLinkActive="is-active">
+      <span class="nav-symbol nav-symbol--us" aria-hidden="true"></span>
+      <span>Nosotros</span>
+    </a>
+  </nav>
+</div>

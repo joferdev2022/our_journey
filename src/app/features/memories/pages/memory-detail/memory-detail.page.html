@@ -1,0 +1,133 @@
+<section class="memory-detail-page">
+  @if (status() === 'loading') {
+    <div class="detail-loading" aria-label="Cargando recuerdo" aria-busy="true">
+      <div class="loading-hero"></div>
+      <div class="loading-line loading-line--title"></div>
+      <div class="loading-line"></div>
+    </div>
+  } @else if (status() === 'not-found') {
+    <div class="state-card">
+      <p class="eyebrow">Recuerdo no encontrado</p>
+      <h1>No encontramos este recuerdo.</h1>
+      <a routerLink="/memories">Volver a Recuerdos</a>
+    </div>
+  } @else if (status() === 'error') {
+    <div class="state-card" role="alert">
+      <p class="eyebrow">No pudimos abrir el recuerdo</p>
+      <h1>Algo salió mal.</h1>
+      <button type="button" (click)="retry()">Reintentar</button>
+      <a routerLink="/memories">Volver a Recuerdos</a>
+    </div>
+  } @else if (memory(); as currentMemory) {
+    <a class="back-link" routerLink="/memories">← Recuerdos</a>
+
+    <article class="memory-story">
+      <section class="memory-hero" aria-label="Fotografía principal">
+        @if (primaryPhoto(); as photo) {
+          @if (photoAvailable(photo.id)) {
+            <button type="button" (click)="openViewer(photo.id)">
+              <img
+                [src]="photo.url"
+                [alt]="'Foto principal de ' + currentMemory.title"
+                (error)="markPhotoFailed(photo.id)"
+              />
+              <span>Ver fotografía</span>
+            </button>
+          } @else {
+            <div class="hero-placeholder">
+              <span aria-hidden="true">{{ category()?.icon || 'OJ' }}</span>
+              <p>Sin fotografía disponible</p>
+            </div>
+          }
+        } @else {
+          <div class="hero-placeholder">
+            <span aria-hidden="true">{{ category()?.icon || 'OJ' }}</span>
+            <p>Sin fotografía</p>
+          </div>
+        }
+      </section>
+
+      <header class="story-header">
+        <p class="eyebrow">Recuerdo</p>
+        <h1>{{ currentMemory.title }}</h1>
+      </header>
+
+      <dl class="memory-meta">
+        <div>
+          <dt>Fecha</dt>
+          <dd>{{ formatDate(currentMemory.memoryDate) }}</dd>
+        </div>
+        <div>
+          <dt>Lugar</dt>
+          <dd>{{ currentMemory.placeName || 'Lugar no especificado' }}</dd>
+        </div>
+        <div>
+          <dt>Categoría</dt>
+          <dd>{{ category()?.name || 'Sin categoría' }}</dd>
+        </div>
+        <div>
+          <dt>Importancia</dt>
+          <dd
+            class="importance"
+            [attr.aria-label]="'Importancia ' + currentMemory.importance + ' de 5'"
+          >
+            @for (level of importanceLevels; track level) {
+              <span [class.is-active]="level <= currentMemory.importance" aria-hidden="true"
+                >★</span
+              >
+            }
+          </dd>
+        </div>
+      </dl>
+
+      <section class="narrative" aria-labelledby="memory-narrative-title">
+        <h2 id="memory-narrative-title">Nuestra historia</h2>
+        <p>{{ currentMemory.description || 'Este recuerdo todavía no tiene una descripción.' }}</p>
+      </section>
+
+      @if (photoViews().length > 0) {
+        <section class="gallery" aria-labelledby="memory-gallery-title">
+          <header>
+            <h2 id="memory-gallery-title">Fotografías</h2>
+            <span>{{ photoViews().length }}</span>
+          </header>
+          <div class="gallery-grid">
+            @for (photo of photoViews(); track photo.id) {
+              @if (photoAvailable(photo.id)) {
+                <button
+                  type="button"
+                  [attr.aria-label]="'Abrir ' + photo.alt"
+                  (click)="openViewer(photo.id)"
+                >
+                  <img
+                    [src]="photo.thumbnailUrl"
+                    [alt]="photo.alt"
+                    loading="lazy"
+                    (error)="markPhotoFailed(photo.id)"
+                  />
+                </button>
+              }
+            }
+          </div>
+        </section>
+      }
+
+      @if (mapNavigation(); as navigation) {
+        <footer class="story-actions">
+          <a [routerLink]="navigation.commands" [queryParams]="navigation.queryParams">
+            <span class="map-pin" aria-hidden="true"></span>
+            Ver en mapa
+          </a>
+        </footer>
+      }
+    </article>
+  }
+</section>
+
+@if (viewerIndex() !== null) {
+  <app-photo-viewer
+    [photos]="photoViews()"
+    [initialIndex]="viewerIndex() ?? 0"
+    (closed)="closeViewer()"
+  />
+}

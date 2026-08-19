@@ -1,0 +1,58 @@
+<section class="journey" aria-label="Mapa de recuerdos">
+  <app-journey-map
+    [featureCollection]="featureCollection()"
+    [selectedMemoryId]="selectedMemory()?.id ?? null"
+    (memorySelected)="selectMemory($event)"
+  />
+
+  <button
+    class="journey__show-all"
+    type="button"
+    aria-label="Volver a la vista general del mapa"
+    (click)="showAllMemories()"
+  >
+    Vista general
+  </button>
+
+  <div class="journey__status" aria-live="polite">
+    @if (status() === 'loading') {
+      <div class="status-pill">
+        <span class="spinner" aria-hidden="true"></span>Cargando recuerdos…
+      </div>
+    } @else if (status() === 'empty') {
+      <div class="status-card">
+        <p class="status-card__eyebrow">El comienzo</p>
+        <h1>Todavía no hay recuerdos guardados.</h1>
+        <p>Crea el primero para comenzar nuestra historia.</p>
+        <a routerLink="/admin/memories/new">Crear primer recuerdo</a>
+      </div>
+    } @else if (status() === 'error') {
+      <div class="status-card status-card--error" role="alert">
+        <h1>No pudimos cargar los recuerdos.</h1>
+        <p>Comprueba la conexión con Supabase e inténtalo nuevamente.</p>
+        <button type="button" (click)="retry()">Reintentar</button>
+      </div>
+    } @else {
+      <div class="memory-count">
+        {{ memories().length }} {{ memories().length === 1 ? 'recuerdo' : 'recuerdos' }}
+      </div>
+    }
+  </div>
+
+  @if (showCreatedConfirmation()) {
+    <div class="save-confirmation" role="status">
+      <span>{{ confirmationMessage() }}</span>
+      <button type="button" aria-label="Cerrar confirmación" (click)="dismissConfirmation()">
+        ×
+      </button>
+    </div>
+  }
+
+  @if (selectedMemory(); as memory) {
+    <app-memory-detail-card
+      [memory]="memory"
+      [categoryName]="selectedCategoryName()"
+      (closed)="closeMemoryDetail()"
+    />
+  }
+</section>

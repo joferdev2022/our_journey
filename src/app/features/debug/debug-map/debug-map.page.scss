@@ -1,0 +1,43 @@
+:host,
+.debug-map,
+.debug-map__canvas {
+  display: block;
+  width: 100%;
+  height: 100dvh;
+}
+
+.debug-map {
+  position: relative;
+}
+
+.debug-map__panel {
+  position: absolute;
+  z-index: 2;
+  top: 0.75rem;
+  left: 0.75rem;
+  display: grid;
+  gap: 0.4rem;
+  max-width: calc(100% - 5rem);
+  padding: 0.7rem 0.8rem;
+  border-radius: 0.5rem;
+  color: #17201d;
+  background: rgb(255 255 255 / 92%);
+  box-shadow: 0 4px 16px rgb(23 32 29 / 16%);
+  font:
+    0.75rem/1.4 Inter,
+    sans-serif;
+
+  span {
+    color: #66706b;
+  }
+
+  nav {
+    display: flex;
+    gap: 0.65rem;
+  }
+
+  a {
+    color: #2f5548;
+    font-weight: 700;
+  }
+}

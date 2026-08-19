@@ -1,0 +1,80 @@
+:host {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: block;
+}
+.backdrop {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgb(17 24 21 / 50%);
+  backdrop-filter: blur(2px);
+}
+.dialog {
+  width: min(100%, 28rem);
+  padding: 1.4rem;
+  border: 1px solid rgb(255 255 255 / 55%);
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 24px 70px rgb(17 24 21 / 28%);
+}
+h2,
+p {
+  margin: 0;
+}
+h2 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.55rem;
+  font-weight: 400;
+}
+.eyebrow {
+  margin-bottom: 0.6rem;
+  color: var(--accent);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+.dialog > p:not(.eyebrow) {
+  margin-top: 0.7rem;
+  color: var(--ink-muted);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+.dialog .error {
+  padding: 0.65rem;
+  border-radius: 0.5rem;
+  color: var(--danger);
+  background: #fbebeb;
+}
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 1.2rem;
+}
+button {
+  min-height: 2.65rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.cancel {
+  border: 1px solid var(--line);
+  color: var(--ink);
+  background: #fff;
+}
+.delete {
+  border: 0;
+  color: #fff;
+  background: var(--danger);
+}

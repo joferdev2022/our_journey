@@ -1,0 +1,180 @@
+<form class="memory-form" [formGroup]="memoryForm" (ngSubmit)="submit()" novalidate>
+  <section class="form-panel" aria-labelledby="memory-data-title">
+    <div class="section-heading">
+      <span>01</span>
+      <div>
+        <h2 id="memory-data-title">Datos del recuerdo</h2>
+        <p>Los campos marcados son obligatorios.</p>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="title">Título <span aria-hidden="true">*</span></label>
+      <input
+        id="title"
+        type="text"
+        formControlName="title"
+        maxlength="160"
+        autocomplete="off"
+        placeholder="Nuestra primera cita"
+      />
+      @if (memoryForm.controls.title.touched && memoryForm.controls.title.hasError('required')) {
+        <p class="field-error">Escribe un título.</p>
+      }
+    </div>
+
+    <div class="field-grid">
+      <div class="field">
+        <label for="memoryDate">Fecha <span aria-hidden="true">*</span></label>
+        <input id="memoryDate" type="date" formControlName="memoryDate" />
+        @if (
+          memoryForm.controls.memoryDate.touched &&
+          memoryForm.controls.memoryDate.hasError('required')
+        ) {
+          <p class="field-error">Selecciona una fecha.</p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="categoryId">Categoría <span aria-hidden="true">*</span></label>
+        <select id="categoryId" formControlName="categoryId">
+          <option value="">Selecciona una categoría</option>
+          @for (category of categories(); track category.id) {
+            <option [value]="category.id">{{ category.name }}</option>
+          }
+        </select>
+        @if (categoriesStatus() === 'loading') {
+          <p class="field-hint">Cargando categorías…</p>
+        } @else if (categoriesStatus() === 'empty') {
+          <p class="field-error">No existen categorías en Supabase.</p>
+        } @else if (categoriesStatus() === 'error') {
+          <p class="field-error">No pudimos cargar las categorías.</p>
+          <button class="inline-action" type="button" (click)="retryCategories()">
+            Reintentar
+          </button>
+        } @else if (
+          memoryForm.controls.categoryId.touched &&
+          memoryForm.controls.categoryId.hasError('required')
+        ) {
+          <p class="field-error">Selecciona una categoría.</p>
+        }
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="placeName">Lugar</label>
+      <input
+        id="placeName"
+        type="text"
+        formControlName="placeName"
+        maxlength="160"
+        autocomplete="off"
+        placeholder="Plaza de Armas"
+      />
+    </div>
+
+    <div class="field">
+      <label for="description">Descripción</label>
+      <textarea
+        id="description"
+        formControlName="description"
+        maxlength="4000"
+        rows="5"
+        placeholder="Aquí comenzó todo…"
+      ></textarea>
+    </div>
+
+    <div class="field-grid">
+      <div class="field">
+        <label for="importance">Importancia</label>
+        <select id="importance" formControlName="importance">
+          @for (level of importanceLevels; track level) {
+            <option [ngValue]="level">{{ level }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="tripId">Viaje</label>
+        <select id="tripId" formControlName="tripId">
+          <option value="">Sin viaje</option>
+          @for (trip of trips(); track trip.id) {
+            <option [value]="trip.id">{{ trip.title }}</option>
+          }
+        </select>
+        @if (tripsStatus() === 'loading') {
+          <p class="field-hint">Cargando viajes…</p>
+        } @else if (tripsStatus() === 'empty') {
+          <p class="field-hint">Aún no hay viajes. Puedes continuar sin uno.</p>
+        } @else if (tripsStatus() === 'error') {
+          <p class="field-hint">Los viajes no están disponibles; este campo es opcional.</p>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="location-panel" aria-labelledby="location-title">
+    <div class="section-heading">
+      <span>02</span>
+      <div>
+        <h2 id="location-title">Ubicación</h2>
+        <p>
+          {{
+            mode() === 'edit'
+              ? 'La ubicación actual está marcada. Haz clic para cambiarla.'
+              : 'Haz clic en el mapa para indicar dónde ocurrió este recuerdo.'
+          }}
+        </p>
+      </div>
+    </div>
+
+    <div class="map-frame">
+      <app-location-picker-map
+        [initialLocation]="selectedLocation()"
+        (locationSelected)="setLocation($event)"
+      />
+    </div>
+
+    @if (
+      memoryForm.controls.latitude.value !== null && memoryForm.controls.longitude.value !== null
+    ) {
+      <p class="coordinates" aria-live="polite">
+        Lat: {{ memoryForm.controls.latitude.value.toFixed(5) }}
+        <span aria-hidden="true">·</span>
+        Lng: {{ memoryForm.controls.longitude.value.toFixed(5) }}
+      </p>
+    } @else {
+      <p class="coordinates coordinates--empty">Todavía no seleccionaste un punto.</p>
+    }
+
+    @if (
+      memoryForm.controls.latitude.touched &&
+      (memoryForm.controls.latitude.invalid || memoryForm.controls.longitude.invalid)
+    ) {
+      <p class="field-error">Selecciona una ubicación válida en el mapa.</p>
+    }
+  </section>
+
+  <footer class="form-actions">
+    @if (saveError()) {
+      <p class="save-error" role="alert">{{ saveError() }}</p>
+    }
+    <div>
+      <button
+        class="secondary-button"
+        type="button"
+        [disabled]="isSaving()"
+        (click)="requestCancel()"
+      >
+        Cancelar
+      </button>
+      <button
+        class="primary-button"
+        type="submit"
+        [disabled]="isSaving() || categoriesStatus() !== 'ready' || categories().length === 0"
+      >
+        {{ isSaving() ? 'Guardando…' : mode() === 'edit' ? 'Guardar cambios' : 'Guardar recuerdo' }}
+      </button>
+    </div>
+  </footer>
+</form>

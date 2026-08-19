@@ -1,0 +1,110 @@
+<section class="photos-page">
+  @if (status() === 'loading') {
+    <div class="state-card" role="status">
+      <span class="spinner" aria-hidden="true"></span>Cargando fotografías…
+    </div>
+  } @else if (status() === 'not-found') {
+    <div class="state-card">
+      <h1>No encontramos este recuerdo.</h1>
+      <a routerLink="/admin">Volver a Administración</a>
+    </div>
+  } @else if (status() === 'error') {
+    <div class="state-card" role="alert">
+      <h1>No pudimos cargar las fotografías.</h1>
+      <p>Comprueba la conexión e inténtalo nuevamente.</p>
+      <button type="button" (click)="retry()">Reintentar</button>
+    </div>
+  } @else if (memory(); as selectedMemory) {
+    <header class="photos-header">
+      <a class="back-link" routerLink="/admin">← Administración</a>
+      <p class="eyebrow">Fotografías del recuerdo</p>
+      <h1>{{ selectedMemory.title }}</h1>
+      <p>{{ formatDate(selectedMemory.memoryDate) }}</p>
+    </header>
+
+    <app-memory-photo-uploader
+      [memoryId]="selectedMemory.id"
+      [nextSortOrder]="nextSortOrder()"
+      (uploadsCompleted)="uploadsCompleted($event)"
+    />
+
+    <section class="existing-photos" aria-labelledby="existing-photos-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Galería privada</p>
+          <h2 id="existing-photos-title">Fotografías guardadas</h2>
+        </div>
+        <span>{{ photos().length }}</span>
+      </div>
+
+      @if (feedback()) {
+        <p class="feedback" role="status">{{ feedback() }}</p>
+      }
+
+      @if (photos().length === 0) {
+        <div class="empty-gallery">
+          <span aria-hidden="true">◇</span>
+          <p>Aún no hay fotografías en este recuerdo.</p>
+        </div>
+      } @else {
+        <div class="photo-grid">
+          @for (photo of photos(); track photo.id; let index = $index) {
+            <article class="photo-tile" [class.is-cover]="isCover(photo)">
+              <div class="photo-tile__image">
+                @if (thumbnailUrl(photo); as url) {
+                  <img
+                    [src]="url"
+                    [alt]="photo.originalFilename ?? 'Fotografía del recuerdo'"
+                    loading="lazy"
+                  />
+                }
+                @if (isCover(photo)) {
+                  <span class="cover-badge">Portada</span>
+                }
+              </div>
+              <div class="photo-tile__content">
+                <p>{{ photo.originalFilename ?? 'Fotografía' }}</p>
+                <div class="order-actions" aria-label="Cambiar orden">
+                  <button
+                    type="button"
+                    [disabled]="index === 0 || busyAction() !== null"
+                    aria-label="Mover fotografía hacia atrás"
+                    (click)="movePhoto(index, -1)"
+                  >
+                    ←
+                  </button>
+                  <span>{{ index + 1 }}</span>
+                  <button
+                    type="button"
+                    [disabled]="index === photos().length - 1 || busyAction() !== null"
+                    aria-label="Mover fotografía hacia adelante"
+                    (click)="movePhoto(index, 1)"
+                  >
+                    →
+                  </button>
+                </div>
+                <button
+                  class="cover-button"
+                  type="button"
+                  [disabled]="isCover(photo) || busyAction() !== null"
+                  (click)="setCover(photo)"
+                >
+                  {{ isCover(photo) ? 'Portada actual' : 'Establecer como portada' }}
+                </button>
+                <button
+                  class="delete-button"
+                  type="button"
+                  [disabled]="busyAction() !== null"
+                  [attr.aria-label]="'Eliminar ' + (photo.originalFilename ?? 'fotografía')"
+                  (click)="deletePhoto(photo)"
+                >
+                  {{ busyAction() === 'delete:' + photo.id ? 'Eliminando…' : 'Eliminar' }}
+                </button>
+              </div>
+            </article>
+          }
+        </div>
+      }
+    </section>
+  }
+</section>

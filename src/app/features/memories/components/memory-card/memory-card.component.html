@@ -1,0 +1,38 @@
+<a
+  class="memory-card"
+  [routerLink]="['/memories', memory().id]"
+  [attr.aria-label]="'Abrir recuerdo ' + memory().title"
+>
+  <div class="memory-card__visual">
+    @if (showImage()) {
+      <img
+        [src]="thumbnailUrl()!"
+        [alt]="'Foto de ' + memory().title"
+        loading="lazy"
+        decoding="async"
+        (error)="markThumbnailFailed()"
+      />
+    } @else {
+      <div class="memory-card__placeholder">
+        <span class="placeholder-mark" aria-hidden="true">{{ category()?.icon || 'OJ' }}</span>
+        <span>{{ category()?.name || 'Recuerdo' }}</span>
+        <small>Sin fotografía</small>
+      </div>
+    }
+  </div>
+
+  <div class="memory-card__body">
+    <h3>{{ memory().title }}</h3>
+    <p class="memory-card__date">{{ formattedDate() }}</p>
+    <p class="memory-card__place">{{ memory().placeName || 'Lugar no especificado' }}</p>
+
+    <footer>
+      <span class="category-label">{{ category()?.name || 'Sin categoría' }}</span>
+      <span class="importance" [attr.aria-label]="'Importancia ' + memory().importance + ' de 5'">
+        @for (level of importanceLevels; track level) {
+          <span [class.is-active]="level <= memory().importance" aria-hidden="true">★</span>
+        }
+      </span>
+    </footer>
+  </div>
+</a>

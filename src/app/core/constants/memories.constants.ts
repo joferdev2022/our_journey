@@ -1,0 +1,2 @@
+export const MEMORIES_INITIAL_VISIBLE = 24;
+export const MEMORIES_VISIBLE_INCREMENT = 24;

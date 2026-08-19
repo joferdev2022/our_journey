@@ -1,0 +1,106 @@
+<button
+  class="detail-backdrop"
+  type="button"
+  aria-label="Cerrar detalle del recuerdo"
+  (click)="closed.emit()"
+></button>
+
+<article class="detail-card" aria-labelledby="memory-detail-title">
+  <div class="detail-card__handle" aria-hidden="true"></div>
+
+  @if (photoStatus() === 'ready' && primaryPhoto(); as mainPhoto) {
+    <button
+      class="photo-hero"
+      type="button"
+      aria-label="Abrir fotografía principal"
+      (click)="openViewer(primaryPhotoIndex())"
+    >
+      <img [src]="mainPhoto.url" [alt]="mainPhoto.alt" (error)="markImageFailure()" />
+    </button>
+  }
+
+  @if (photoStatus() === 'error' || imageLoadFailed()) {
+    <div class="photo-error" role="status">
+      <span>No pudimos mostrar las fotografías.</span>
+      <button type="button" (click)="reloadPhotos()">Recargar</button>
+    </div>
+  }
+
+  <header class="detail-card__header">
+    <div>
+      <p class="eyebrow">Recuerdo</p>
+      <h2 id="memory-detail-title">{{ memory().title }}</h2>
+    </div>
+    <button class="close-button" type="button" aria-label="Cerrar detalle" (click)="closed.emit()">
+      ×
+    </button>
+  </header>
+
+  <dl class="memory-meta">
+    <div>
+      <dt>Fecha</dt>
+      <dd>{{ formattedDate() }}</dd>
+    </div>
+    <div>
+      <dt>Lugar</dt>
+      <dd>{{ memory().placeName || 'Lugar no especificado' }}</dd>
+    </div>
+    <div>
+      <dt>Categoría</dt>
+      <dd>{{ categoryName() }}</dd>
+    </div>
+  </dl>
+
+  <div class="importance">
+    <span>Importancia</span>
+    <div
+      class="importance__marks"
+      [attr.aria-label]="'Importancia ' + memory().importance + ' de 5'"
+    >
+      @for (level of importanceLevels; track level) {
+        <span [class.is-active]="level <= memory().importance" aria-hidden="true">★</span>
+      }
+    </div>
+  </div>
+
+  <div class="description">
+    <span>Descripción</span>
+    <p>{{ memory().description || 'Sin descripción todavía.' }}</p>
+  </div>
+
+  @if (photoStatus() === 'ready' && photos().length > 1) {
+    <section class="mini-gallery" aria-labelledby="memory-gallery-title">
+      <div class="mini-gallery__heading">
+        <h3 id="memory-gallery-title">Fotografías</h3>
+        <span>{{ photos().length }}</span>
+      </div>
+      <div class="mini-gallery__grid">
+        @for (photo of visiblePhotos(); track photo.id; let index = $index) {
+          <button
+            type="button"
+            [attr.aria-label]="'Abrir fotografía ' + (index + 1)"
+            (click)="openViewer(index)"
+          >
+            <img
+              [src]="photo.thumbnailUrl"
+              [alt]="photo.alt"
+              loading="lazy"
+              (error)="markImageFailure()"
+            />
+            @if (index === 3 && photos().length > 4) {
+              <span class="more-photos" aria-hidden="true">+{{ photos().length - 4 }}</span>
+            }
+          </button>
+        }
+      </div>
+    </section>
+  }
+</article>
+
+@if (viewerIndex() !== null) {
+  <app-photo-viewer
+    [photos]="viewerPhotos()"
+    [initialIndex]="viewerIndex() ?? 0"
+    (closed)="closeViewer()"
+  />
+}

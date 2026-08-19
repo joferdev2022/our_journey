@@ -1,0 +1,15 @@
+<section class="trip-editor">
+  <header class="page-header">
+    <a class="back-link" routerLink="/admin/trips">← Viajes</a>
+    <p class="eyebrow">Nuevo viaje</p>
+    <h1>Abre un nuevo capítulo.</h1>
+    <p>Define las fechas y luego añade recuerdos a esta historia.</p>
+  </header>
+  <app-trip-form
+    mode="create"
+    [isSaving]="isSaving()"
+    [saveError]="saveError()"
+    (submitted)="createTrip($event)"
+    (canceled)="cancel()"
+  />
+</section>

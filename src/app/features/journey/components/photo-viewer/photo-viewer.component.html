@@ -1,0 +1,37 @@
+<div
+  class="viewer"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Visor de fotografías"
+  (click)="close()"
+>
+  <header class="viewer__header" (click)="$event.stopPropagation()">
+    <p aria-live="polite">{{ index() + 1 }} / {{ photos().length }}</p>
+    <button #closeButton type="button" aria-label="Cerrar visor" (click)="close()">×</button>
+  </header>
+
+  <div class="viewer__stage" (click)="$event.stopPropagation()">
+    @if (currentPhoto(); as photo) {
+      <img [src]="photo.url" [alt]="photo.alt" />
+    }
+  </div>
+
+  @if (photos().length > 1) {
+    <button
+      class="viewer__nav viewer__nav--previous"
+      type="button"
+      aria-label="Fotografía anterior"
+      (click)="$event.stopPropagation(); previous()"
+    >
+      ←
+    </button>
+    <button
+      class="viewer__nav viewer__nav--next"
+      type="button"
+      aria-label="Fotografía siguiente"
+      (click)="$event.stopPropagation(); next()"
+    >
+      →
+    </button>
+  }
+</div>

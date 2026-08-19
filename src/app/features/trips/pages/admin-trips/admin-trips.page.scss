@@ -1,0 +1,148 @@
+:host {
+  display: block;
+  height: 100%;
+  overflow: auto;
+}
+.admin-trips {
+  min-height: 100%;
+  padding: 1.5rem 1rem 3rem;
+  background: var(--surface);
+}
+.page-header,
+.trip-panel,
+.feedback {
+  width: min(100%, 62rem);
+  margin-inline: auto;
+}
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+}
+h1,
+h2,
+p {
+  margin: 0;
+}
+h1 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(2.5rem, 9vw, 4rem);
+  font-weight: 400;
+  letter-spacing: -0.055em;
+}
+.page-header > div > p:last-child {
+  margin-top: 0.6rem;
+  color: var(--ink-muted);
+}
+.eyebrow {
+  margin-bottom: 0.45rem;
+  color: var(--accent);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+.back-link {
+  display: inline-block;
+  margin-bottom: 1.2rem;
+  color: var(--accent-strong);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.primary-link {
+  padding: 0.7rem 0.9rem;
+  border-radius: 0.65rem;
+  color: #fff;
+  background: var(--accent-strong);
+  font-size: 0.76rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+.feedback {
+  margin-bottom: 1rem;
+  padding: 0.7rem;
+  border-radius: 0.55rem;
+  color: #355a4d;
+  background: #edf5f1;
+  font-size: 0.75rem;
+}
+.trip-panel {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: #fff;
+  box-shadow: 0 14px 38px rgb(23 32 29 / 6%);
+}
+.trip-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+.trip-row:last-child {
+  border-bottom: 0;
+}
+.trip-row h2 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.15rem;
+  font-weight: 400;
+}
+.trip-row p {
+  margin-top: 0.3rem;
+  color: var(--ink-muted);
+  font-size: 0.72rem;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.actions a,
+.actions button,
+.state-card a,
+.state-card button {
+  padding: 0.45rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 0.48rem;
+  color: var(--accent-strong);
+  background: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+.actions button {
+  border-color: rgb(154 63 63 / 25%);
+  color: var(--danger);
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.state-card {
+  min-height: 14rem;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.55rem;
+  padding: 1rem;
+  color: var(--ink-muted);
+  text-align: center;
+}
+.state-card h2 {
+  color: var(--ink);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 400;
+}
+@media (min-width: 700px) {
+  .admin-trips {
+    padding: 2rem 2rem 4rem;
+  }
+}

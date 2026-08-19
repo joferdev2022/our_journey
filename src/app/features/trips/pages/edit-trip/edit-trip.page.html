@@ -1,0 +1,29 @@
+<section class="trip-editor">
+  @if (status() === 'loading') {
+    <div class="state-card" role="status">Cargando viaje…</div>
+  } @else if (status() === 'not-found') {
+    <div class="state-card">
+      <h1>No encontramos este viaje.</h1>
+      <a routerLink="/admin/trips">Volver</a>
+    </div>
+  } @else if (status() === 'error') {
+    <div class="state-card" role="alert">
+      <h1>No pudimos cargar el viaje.</h1>
+      <button type="button" (click)="retry()">Reintentar</button>
+    </div>
+  } @else if (trip(); as selectedTrip) {
+    <header class="page-header">
+      <p class="eyebrow">Editar viaje</p>
+      <h1>{{ selectedTrip.title }}</h1>
+      <p>Actualiza sus fechas o descripción.</p>
+    </header>
+    <app-trip-form
+      mode="edit"
+      [initialTrip]="selectedTrip"
+      [isSaving]="isSaving()"
+      [saveError]="saveError()"
+      (submitted)="updateTrip($event)"
+      (canceled)="cancel()"
+    />
+  }
+</section>

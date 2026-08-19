@@ -1,0 +1,65 @@
+<form class="trip-form" [formGroup]="tripForm" (ngSubmit)="submit()" novalidate>
+  <div class="field">
+    <label for="trip-title">Título <span aria-hidden="true">*</span></label>
+    <input
+      id="trip-title"
+      type="text"
+      formControlName="title"
+      maxlength="160"
+      autocomplete="off"
+      placeholder="Cusco 2025"
+    />
+    @if (tripForm.controls.title.touched && tripForm.controls.title.hasError('required')) {
+      <p class="field-error">Escribe un título.</p>
+    }
+  </div>
+
+  <div class="field-grid">
+    <div class="field">
+      <label for="trip-start">Fecha inicio <span aria-hidden="true">*</span></label>
+      <input id="trip-start" type="date" formControlName="startDate" />
+      @if (
+        tripForm.controls.startDate.touched && tripForm.controls.startDate.hasError('required')
+      ) {
+        <p class="field-error">Selecciona la fecha de inicio.</p>
+      }
+    </div>
+    <div class="field">
+      <label for="trip-end">Fecha fin <span aria-hidden="true">*</span></label>
+      <input id="trip-end" type="date" formControlName="endDate" />
+      @if (tripForm.controls.endDate.touched && tripForm.controls.endDate.hasError('required')) {
+        <p class="field-error">Selecciona la fecha final.</p>
+      }
+    </div>
+  </div>
+
+  @if (tripForm.touched && tripForm.hasError('dateRange')) {
+    <p class="range-error" role="alert">
+      La fecha final no puede ser anterior a la fecha de inicio.
+    </p>
+  }
+
+  <div class="field">
+    <label for="trip-description">Descripción</label>
+    <textarea
+      id="trip-description"
+      formControlName="description"
+      maxlength="4000"
+      rows="6"
+      placeholder="Nuestro primer viaje juntos…"
+    ></textarea>
+  </div>
+
+  @if (saveError()) {
+    <p class="save-error" role="alert">{{ saveError() }}</p>
+  }
+
+  <footer>
+    <button class="secondary" type="button" [disabled]="isSaving()" (click)="requestCancel()">
+      Cancelar
+    </button>
+    <button class="primary" type="submit" [disabled]="isSaving()">
+      {{ isSaving() ? 'Guardando…' : mode() === 'edit' ? 'Guardar cambios' : 'Crear viaje' }}
+    </button>
+  </footer>
+</form>

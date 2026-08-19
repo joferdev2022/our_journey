@@ -1,0 +1,49 @@
+<section class="trips-page">
+  <header class="trips-hero">
+    <p class="eyebrow">Nuestros capítulos</p>
+    <h1>Viajes</h1>
+    <p>Cada viaje reúne lugares y momentos en el orden en que los vivimos.</p>
+  </header>
+
+  @if (status() === 'loading') {
+    <div class="state-card" role="status">
+      <span class="spinner" aria-hidden="true"></span>
+      Cargando viajes…
+    </div>
+  } @else if (status() === 'error') {
+    <div class="state-card state-card--error" role="alert">
+      <h2>No pudimos cargar los viajes.</h2>
+      <p>Intenta nuevamente en unos segundos.</p>
+      <button type="button" (click)="retry()">Reintentar</button>
+    </div>
+  } @else if (status() === 'empty') {
+    <div class="state-card">
+      <span class="empty-mark" aria-hidden="true">OJ</span>
+      <h2>Todavía no hay viajes.</h2>
+      <p>Cuando creemos el primero aparecerá aquí como un nuevo capítulo.</p>
+      <a routerLink="/admin/trips/new">Crear primer viaje</a>
+    </div>
+  } @else {
+    <div class="trip-grid">
+      @for (trip of trips(); track trip.id) {
+        <article class="trip-card">
+          <div class="trip-card__mark" aria-hidden="true">{{ trip.title.slice(0, 1) }}</div>
+          <div class="trip-card__content">
+            <p class="trip-card__date">{{ formatDates(trip.startDate, trip.endDate) }}</p>
+            <h2>{{ trip.title }}</h2>
+            <p class="trip-card__description">
+              {{ trip.description || 'Un capítulo de nuestra historia.' }}
+            </p>
+          </div>
+          <footer>
+            <span>
+              {{ memoryCount(trip.id) }}
+              {{ memoryCount(trip.id) === 1 ? 'recuerdo' : 'recuerdos' }}
+            </span>
+            <a [routerLink]="['/trips', trip.id]">Ver viaje <span aria-hidden="true">→</span></a>
+          </footer>
+        </article>
+      }
+    </div>
+  }
+</section>
